@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/noobist/warframe_trader#readme",
   "dependencies": {
-    "discord.js": "^11.5.1"
+    "discord.js": "^11.5.1",
+    "request": "^2.88.0"
   }
 }
