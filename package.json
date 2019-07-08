@@ -1,0 +1,22 @@
+{
+  "name": "warframe_trader",
+  "version": "1.0.0",
+  "description": "Buy low, Sell High",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noobist/warframe_trader.git"
+  },
+  "author": "noobist",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/noobist/warframe_trader/issues"
+  },
+  "homepage": "https://github.com/noobist/warframe_trader#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1"
+  }
+}
