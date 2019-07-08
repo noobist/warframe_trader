@@ -39,8 +39,6 @@ const start = async msg => {
         const data = await api.getItemOrders(itemArray[index]);
         const icon = await api.getImage(itemArray[index]);
 
-        console.log(icon);
-
         for (let j=0; j<data.length; j++) {
           if (data[j].user.status === 'ingame') {
             if (data[j].order_type === 'buy') {
@@ -72,7 +70,7 @@ const start = async msg => {
                     color: 3447003,
                     title: itemArray[index],
                     url: `https://warframe.market/items/${itemArray[index]}`,
-                    thumbnail: {
+                    image: {
 		                    url: `${IMAGE_LINK}${icon}`,
 	                   },
                     fields: [
