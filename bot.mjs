@@ -72,7 +72,7 @@ const start = async msg => {
                     color: 3447003,
                     title: itemArray[index],
                     url: `https://warframe.market/items/${itemArray[index]}`,
-                    thumbnail: {
+                    image: {
 		                    url: `${IMAGE_LINK}${icon}`,
 	                   },
                     fields: [
