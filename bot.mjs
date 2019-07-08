@@ -75,7 +75,7 @@ const start = async msg => {
                       },
                       {
                         name: buylist[0].name,
-                        value: `Selling for ${buylist[0].plat}\nMod Rank: ${buylist[0].rank}`
+                        value: `Buying for ${buylist[0].plat}\nMod Rank: ${buylist[0].rank}`
                       },
                       {
                         name: 'Profit',
