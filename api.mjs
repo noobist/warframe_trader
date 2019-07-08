@@ -13,10 +13,20 @@ const getAllItems = async () => {
   const response = await axios.get(urlBuilder(endpoint));
 
   if (response.status === 200)
-    return response.data;
+    return response.data.payload.items;
   else
     console.log(response);
 }
+
+/*const async getItemOrders = (item) => {
+  const endpoint = `${item}/orders`
+  const response = await axios.get(urlBuilder(endpoint));
+
+  if (response.stats === 200)
+    return response.data;
+  else
+    console.log(response);
+}*/
 
 const api = {
   getAllItems
