@@ -4,42 +4,132 @@ import api from './api';
 import fs from 'fs';
 
 const client = new Discord.Client();
+const file = 'items.txt';
+const LOG_CHANNEL_ID = 597683206166413314;
+const rps = 3;
+let started = false;
 
-const update = async () => {
-  const file = 'items.txt';
+let itemArray = [];
+let buylist = [];
+let selllist = [];
+let index = 0;
 
+const updateItems = async () => {
   try {
     const data = await api.getAllItems();
 
-    fs.truncate(file, 0, function() {
-      console.log('File emptied')
+    for (let i=0; i<data.length; i++)
+      itemArray[i] = data[i].url_name;
+  } catch (e) { }
+}
 
-      for (var i = 0; i < data.length; i++) {
-        fs.appendFile(file, data[i].url_name+"\n", (err) => {
-          if (err) throw err;
-        })
-        console.log(`${i+1} objects loaded`);
-        if (i === data.length-1) {
-          console.log("Successfully pulled new data");
-          return true;
+async function wait(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+const start = async msg => {
+  try {
+    while(started) {
+      for (let i=0; i<rps; i++) {
+        console.log('===================');
+        console.log(`${itemArray[index]}`)
+        const data = await api.getItemOrders(itemArray[index]);
+
+        for (let j=0; j<data.length; j++) {
+          if (data[j].user.status === 'ingame') {
+            if (data[j].order_type === 'buy') {
+              buylist[buylist.length] = {
+                name: data[j].user.ingame_name,
+                plat: data[j].platinum,
+                rank: data[j].mod_rank
+              };
+            }
+            if (data[j].order_type === 'sell') {
+              selllist[selllist.length] = {
+                name: data[j].user.ingame_name,
+                plat: data[j].platinum,
+                rank: data[j].mod_rank
+              };
+            }
+          }
+          if (j === data.length-1) {
+            selllist.sort((a,b) => (a.plat > b.plat) ? 1 : ((b.plat > a.plat) ? -1 : 0));
+            buylist.sort((a,b) => (a.plat < b.plat) ? 1 : ((b.plat < a.plat) ? -1 : 0));
+
+
+            if (buylist.length > 0 && selllist.length > 0) {
+              if ((buylist[0].plat - selllist[0].plat) > 0) {
+                console.log(`${selllist[0].name} selling for: ${selllist[0].plat}\n${buylist[0].name} buying for: ${buylist[0].plat}\nProfit: ${buylist[0].plat - selllist[0].plat}`);
+
+                const logMessage = {
+                  embed: {
+                    color: 3447003,
+                    title: itemArray[index],
+                    url: `https://warframe.market/items/${itemArray[index]}`,
+                    fields: [
+                      {
+                        name: selllist[0].name,
+                        value: `Selling for ${selllist[0].plat}\nMod Rank: ${selllist[0].rank}`
+                      },
+                      {
+                        name: buylist[0].name,
+                        value: `Selling for ${buylist[0].plat}\nMod Rank: ${buylist[0].rank}`
+                      },
+                      {
+                        name: 'Profit',
+                        value: buylist[0].plat - selllist[0].plat
+                      }
+                    ],
+                    timestamp: new Date(),
+                    footer: {
+                      icon_url: client.user.avatarURL,
+                      text: "© noobist"
+                    }
+                  }
+                }
+
+                msg.channel.send(logMessage);
+              }
+            }
+
+            buylist = [];
+            selllist = [];
+          }
         }
+        index++;
+
+        if (index === itemArray.length-1)
+          index = 0;
       }
-    });
-  } catch (e) {
-    return false;
-  }
+      await wait(1000);
+    }
+  } catch (e) { }
 }
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    updateItems();
 });
 
 client.on('message', msg => {
-  if (msg.content === '!update') {
-    if(update())
-      msg.reply('Updated!');
+  if (msg.content === '!start') {
+    started = true;
+    console.log('\nStarting scan...');
+    msg.reply('Bot Started!');
+
+    start(msg);
+  }
+
+  if (msg.content === '!stop') {
+    if (started) {
+      started = false;
+      console.log('\nScan stopped!');
+      msg.reply('Bot stopped!');
+    }
     else
-      msg.reply('An error has occured!');
+      msg.reply('Bot not started!');
   }
 });
 

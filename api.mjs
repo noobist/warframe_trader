@@ -18,18 +18,19 @@ const getAllItems = async () => {
     console.log(response);
 }
 
-/*const async getItemOrders = (item) => {
-  const endpoint = `${item}/orders`
+const getItemOrders = async item => {
+  const endpoint = `items/${item}/orders`;
   const response = await axios.get(urlBuilder(endpoint));
 
-  if (response.stats === 200)
-    return response.data;
+  if (response.status === 200)
+    return response.data.payload.orders;
   else
     console.log(response);
-}*/
+}
 
 const api = {
-  getAllItems
+  getAllItems,
+  getItemOrders,
 };
 
 export default api;
