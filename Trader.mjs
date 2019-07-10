@@ -79,7 +79,7 @@ class Trader {
         let sellList = [];
 
         orders.forEach(function(order) {
-          if (order.user.status === 'ingame') {
+          if (order.user.status === 'ingame' && order.user.region === 'en') {
             if (order.order_type === 'buy') {
               buyList[buyList.length] = {
                 name: order.user.ingame_name,
