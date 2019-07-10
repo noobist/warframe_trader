@@ -18,14 +18,14 @@ const getAllItems = async () => {
     console.log(response);
 }
 
-const getImage = async item => {
+const getItem = async item => {
   const endpoint = `items/${item}`;
   const response = await axios.get(urlBuilder(endpoint));
 
   if (response.status === 200)
-    return response.data.payload.item.items_in_set[0].icon;
+    return response.data.payload.item.items_in_set[0];
   else
-    console.log(response)
+    return NULL;
 }
 
 const getItemOrders = async item => {
@@ -35,13 +35,13 @@ const getItemOrders = async item => {
   if (response.status === 200)
     return response.data.payload.orders;
   else
-    console.log(response);
+    return NULL;
 }
 
 const api = {
   getAllItems,
+  getItem,
   getItemOrders,
-  getImage,
 };
 
 export default api;
